@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Bingo Card</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        td {
+            border: 1px solid black;
+            width: 100px;
+            height: 100px;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 18px;
+        }
+        button {
+            margin-top: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<script>
+    // Function to shuffle an array
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    // Function to set a cookie
+    function setCookie(name, value, days) {
+        const expires = new Date();
+        expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+        document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+    }
+
+    // Function to get a cookie value
+    function getCookie(name) {
+        const keyValue = document.cookie.match(`(^|;) ?${name}=([^;]*)(;|$)`);
+        return keyValue ? keyValue[2] : null;
+    }
+
+    // Function to read answers from a text file
+    async function fetchAnswers() {
+        const response = await fetch('answers.txt');
+        const text = await response.text();
+        return text.split('\n').filter(answer => answer.trim() !== '');
+    }
+
+    // Function to create and display the bingo card
+    async function createBingoCard() {
+        // Fetch answers from the text file
+        const answers = await fetchAnswers();
+
+        // Shuffle the answers
+        shuffle(answers);
+
+        // Create a 3x3 table for the bingo card
+        const table = document.createElement("table");
+
+        for (let i = 0; i < 3; i++) {
+            const row = table.insertRow();
+
+            for (let j = 0; j < 3; j++) {
+                const cell = row.insertCell();
+                cell.textContent = answers[i * 3 + j];
+                cell.setAttribute("data-answer", answers[i * 3 + j]);
+                cell.addEventListener("click", toggleCell);
+            }
+        }
+
+        // Create a button for downloading the bingo card
+        const downloadButton = document.createElement("button");
+        downloadButton.textContent = "Download Bingo Card";
+        downloadButton.addEventListener("click", downloadBingoCard);
+
+        // Append the table and button to the body
+        document.body.appendChild(table);
+        document.body.appendChild(downloadButton);
+
+        // Check if there is a saved state in cookies
+        const savedState = getCookie("bingoCardState");
+
+        if (savedState) {
+            const savedAnswers = savedState.split(",");
+            // Mark the cells based on the saved state
+            markCells(savedAnswers);
+        }
+    }
+
+    // Function to toggle cell marking
+    function toggleCell() {
+        this.classList.toggle("marked");
+
+        // Save the current state in cookies
+        const markedCells = Array.from(document.querySelectorAll(".marked"));
+        const markedAnswers = markedCells.map(cell => cell.getAttribute("data-answer"));
+        setCookie("bingoCardState", markedAnswers.join(","), 365);
+    }
+
+    // Function to mark cells based on saved state
+    function markCells(savedAnswers) {
+        savedAnswers.forEach(answer => {
+            const cell = document.querySelector(`[data-answer="${answer}"]`);
+            if (cell) {
+                cell.classList.add("marked");
+            }
+        });
+    }
+
+    // Function to download the bingo card as an image
+    function downloadBingoCard() {
+        // Create a canvas and draw the table on it
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = 300;
+        canvas.height = 300;
+
+        // Draw the table
+        ctx.font = "16px Arial";
+        const cells = document.querySelectorAll("td");
+        cells.forEach((cell, index) => {
+            const row = Math.floor(index / 3);
+            const col = index % 3;
+            ctx.fillText(cell.textContent, col * 100 + 25, row * 100 + 60);
+            if (cell.classList.contains("marked")) {
+                ctx.beginPath();
+                ctx.arc(col * 100 + 50, row * 100 + 50, 40, 0, 2 * Math.PI);
+                ctx.stroke();
+            }
+        });
+
+        // Create a download link
+        const link = document.createElement("a");
+        link.href = canvas.toDataURL();
+        link.download = "bingo_card.png";
+        link.click();
+    }
+
+    // Create the bingo card on page load
+    window.onload = createBingoCard;
+</script>
+
+</body>
+</html>
