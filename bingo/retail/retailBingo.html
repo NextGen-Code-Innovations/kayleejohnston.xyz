@@ -53,14 +53,6 @@
 <body>
 
 <script>
-    // Function to shuffle an array
-    function shuffle(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-    }
-
     // Function to set a cookie
     function setCookie(name, value, days) {
         const expires = new Date();
@@ -81,13 +73,31 @@
         return text.split('\n').filter(answer => answer.trim() !== '');
     }
 
+    // Function to shuffle answers
+    function shuffleAnswers(answers) {
+        for (let i = answers.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [answers[i], answers[j]] = [answers[j], answers[i]];
+        }
+    }
+
     // Function to create and display the bingo card
     async function createBingoCard() {
-        // Fetch answers from the text file
-        const answers = await fetchAnswers();
+        // Check if shuffled answers are stored in a cookie
+        const storedShuffledAnswers = getCookie("shuffledAnswers");
 
-        // Shuffle the answers
-        shuffle(answers);
+        let answers;
+        if (storedShuffledAnswers) {
+            // Use the stored shuffled answers
+            answers = storedShuffledAnswers.split(",");
+        } else {
+            // Fetch answers from the text file
+            answers = await fetchAnswers();
+
+            // Shuffle the answers and store them in a cookie
+            shuffleAnswers(answers);
+            setCookie("shuffledAnswers", answers.join(","), 365);
+        }
 
         // Create a 5x5 table for the bingo card
         const table = document.createElement("table");
@@ -117,7 +127,7 @@
         // Create a message for sending the card to email
         const emailMessage = document.createElement("div");
         emailMessage.className = "email-message";
-        emailMessage.textContent = "Enter your username to download the bingo card.";
+        emailMessage.textContent = "Enter your username to download the bingo card. After download you can text the card to +1 (513) 305-7090 to be entered in the competition!!";
 
         // Create an input field for the username
         const usernameInput = document.createElement("input");
