@@ -3,29 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Retail Bingo</title>
+    <title>Kroger Bingo</title>
     <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f8f8;
+            color: #333;
+        }
         table {
             border-collapse: collapse;
             margin-top: 20px;
         }
         td {
-            border: 1px solid black;
+            border: 1px solid #ddd;
             width: 100px;
             height: 100px;
             text-align: center;
             vertical-align: middle;
             font-size: 16px;
+            cursor: pointer;
+            background-color: #fff;
+        }
+        td.marked {
+            background-color: #f9e79f; /* Highlight selected cells */
+        }
+        td.bingo {
+            background-color: #82e0aa; /* Highlight cells part of the bingo */
         }
         button {
             margin-top: 10px;
             font-size: 16px;
+            background-color: #3498db;
+            color: #fff;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+        button.reset {
+            background-color: #e74c3c;
         }
         form {
             margin-top: 20px;
         }
         .email-message {
             margin-top: 20px;
+            color: #555;
         }
     </style>
 </head>
@@ -90,6 +111,7 @@
         // Create a button for resetting the bingo card
         const resetButton = document.createElement("button");
         resetButton.textContent = "Reset Bingo Card";
+        resetButton.className = "reset";
         resetButton.addEventListener("click", resetBingoCard);
 
         // Create a form for submitting the bingo card
@@ -127,6 +149,11 @@
     function toggleCell() {
         this.classList.toggle("marked");
 
+        // Check for bingo
+        if (checkBingo()) {
+            notifyBingo();
+        }
+
         // Save the current state in cookies
         const markedCells = Array.from(document.querySelectorAll(".marked"));
         const markedAnswers = markedCells.map(cell => cell.getAttribute("data-answer"));
@@ -141,6 +168,61 @@
                 cell.classList.add("marked");
             }
         });
+
+        // Check for bingo
+        if (checkBingo()) {
+            notifyBingo();
+        }
+    }
+
+    // Function to check for bingo
+    function checkBingo() {
+        const rows = document.querySelectorAll("tr");
+        const columns = document.querySelectorAll("td");
+
+        // Check rows
+        for (let i = 0; i < rows.length; i++) {
+            const rowCells = rows[i].querySelectorAll("td.marked");
+            if (rowCells.length === 5) {
+                markBingoCells(rowCells);
+                return true;
+            }
+        }
+
+        // Check columns
+        for (let i = 0; i < 5; i++) {
+            const colCells = document.querySelectorAll(`td:nth-child(${i + 1}).marked`);
+            if (colCells.length === 5) {
+                markBingoCells(colCells);
+                return true;
+            }
+        }
+
+        // Check diagonals
+        const diagonal1 = document.querySelectorAll("td[data-answer]:nth-child(6n+1).marked");
+        const diagonal2 = document.querySelectorAll("td[data-answer]:nth-child(4n).marked");
+
+        if (diagonal1.length === 5) {
+            markBingoCells(diagonal1);
+            return true;
+        }
+
+        if (diagonal2.length === 5) {
+            markBingoCells(diagonal2);
+            return true;
+        }
+
+        return false;
+    }
+
+    // Function to mark bingo cells
+    function markBingoCells(cells) {
+        cells.forEach(cell => cell.classList.add("bingo"));
+    }
+
+    // Function to notify the user when they get bingo
+    function notifyBingo() {
+        alert("Bingo! You've got a bingo. Congratulations!");
     }
 
     // Function to download the bingo card as an image
@@ -174,9 +256,9 @@
 
     // Function to reset the bingo card
     function resetBingoCard() {
-        // Remove the marked class from all cells
-        const cells = document.querySelectorAll(".marked");
-        cells.forEach(cell => cell.classList.remove("marked"));
+        // Remove the marked and bingo classes from all cells
+        const cells = document.querySelectorAll(".marked, .bingo");
+        cells.forEach(cell => cell.classList.remove("marked", "bingo"));
 
         // Clear the saved state in cookies
         setCookie("bingoCardState", "", -1);
