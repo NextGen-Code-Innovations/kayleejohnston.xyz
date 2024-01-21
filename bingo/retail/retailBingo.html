@@ -114,25 +114,22 @@
         resetButton.className = "reset";
         resetButton.addEventListener("click", resetBingoCard);
 
-        // Create a form for submitting the bingo card
-        const submitForm = document.createElement("form");
-        submitForm.innerHTML = `
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
-            <button type="submit">Submit Bingo Card</button>
-        `;
-        submitForm.addEventListener("submit", submitBingoCard);
-
         // Create a message for sending the card to email
         const emailMessage = document.createElement("div");
         emailMessage.className = "email-message";
-        emailMessage.textContent = "To enter the competition, send the bingo card to my email.";
+        emailMessage.textContent = "Enter your username to download the bingo card.";
 
-        // Append the table, buttons, form, and message to the body
+        // Create an input field for the username
+        const usernameInput = document.createElement("input");
+        usernameInput.type = "text";
+        usernameInput.placeholder = "Enter your username";
+        usernameInput.id = "username";
+
+        // Append the table, buttons, input field, and message to the body
         document.body.appendChild(table);
         document.body.appendChild(downloadButton);
         document.body.appendChild(resetButton);
-        document.body.appendChild(submitForm);
+        document.body.appendChild(usernameInput);
         document.body.appendChild(emailMessage);
 
         // Check if there is a saved state in cookies
@@ -227,6 +224,15 @@
 
     // Function to download the bingo card as an image
     function downloadBingoCard() {
+        // Get the username from the input field
+        const username = document.getElementById("username").value;
+
+        // Check if a username is provided
+        if (!username.trim()) {
+            alert("Please enter your username before downloading the bingo card.");
+            return;
+        }
+
         // Create a canvas and draw the table on it
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
@@ -250,7 +256,7 @@
         // Create a download link
         const link = document.createElement("a");
         link.href = canvas.toDataURL();
-        link.download = "bingo_card.png";
+        link.download = `${username}_${getCurrentDateTime()}_bingo_card.png`;
         link.click();
     }
 
@@ -265,77 +271,6 @@
 
         // Reload the page to create a new random bingo card
         location.reload();
-    }
-
-    // Function to submit the bingo card
-    function submitBingoCard(event) {
-        event.preventDefault();
-
-        // Get the username from the form
-        const username = document.getElementById("username").value;
-
-        // Create a canvas and draw the table on it
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-        canvas.width = 500;
-        canvas.height = 500;
-
-        // Draw the table
-        ctx.font = "14px Arial";
-        const cells = document.querySelectorAll("td");
-        cells.forEach((cell, index) => {
-            const row = Math.floor(index / 5);
-            const col = index % 5;
-            ctx.fillText(cell.textContent, col * 100 + 10, row * 100 + 60);
-            if (cell.classList.contains("marked")) {
-                ctx.beginPath();
-                ctx.arc(col * 100 + 50, row * 100 + 50, 40, 0, 2 * Math.PI);
-                ctx.stroke();
-            }
-        });
-
-        // Convert the canvas to a data URL
-        const imageDataURL = canvas.toDataURL();
-
-        // Create a Blob from the data URL
-        const blob = dataURLToBlob(imageDataURL);
-
-        // Create a FormData object and append the Blob
-        const formData = new FormData();
-        formData.append("bingoCard", blob, "bingo_card.png");
-        formData.append("username", username);
-
-        // Save the bingo card to the server (replace 'save_card.php' with the correct path)
-        fetch('save_card.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => {
-            if (response.ok) {
-                alert('Bingo card submitted and saved successfully!');
-            } else {
-                alert('Failed to submit the bingo card.');
-            }
-        })
-        .catch(error => {
-            console.error(error);
-            alert('Failed to submit the bingo card.');
-        });
-    }
-
-    // Function to convert data URL to Blob
-    function dataURLToBlob(dataURL) {
-        const parts = dataURL.split(';base64,');
-        const contentType = parts[0].split(':')[1];
-        const raw = window.atob(parts[1]);
-        const rawLength = raw.length;
-        const uInt8Array = new Uint8Array(rawLength);
-
-        for (let i = 0; i < rawLength; ++i) {
-            uInt8Array[i] = raw.charCodeAt(i);
-        }
-
-        return new Blob([uInt8Array], { type: contentType });
     }
 
     // Function to get the current date and time in a formatted string
