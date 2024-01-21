@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Bingo Card</title>
+    <title>Retail Bingo</title>
     <style>
         table {
             border-collapse: collapse;
+            margin-top: 20px;
         }
         td {
             border: 1px solid black;
@@ -14,11 +15,17 @@
             height: 100px;
             text-align: center;
             vertical-align: middle;
-            font-size: 18px;
+            font-size: 16px;
         }
         button {
             margin-top: 10px;
             font-size: 16px;
+        }
+        form {
+            margin-top: 20px;
+        }
+        .email-message {
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -61,16 +68,16 @@
         // Shuffle the answers
         shuffle(answers);
 
-        // Create a 3x3 table for the bingo card
+        // Create a 5x5 table for the bingo card
         const table = document.createElement("table");
 
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 5; i++) {
             const row = table.insertRow();
 
-            for (let j = 0; j < 3; j++) {
+            for (let j = 0; j < 5; j++) {
                 const cell = row.insertCell();
-                cell.textContent = answers[i * 3 + j];
-                cell.setAttribute("data-answer", answers[i * 3 + j]);
+                cell.textContent = answers[i * 5 + j];
+                cell.setAttribute("data-answer", answers[i * 5 + j]);
                 cell.addEventListener("click", toggleCell);
             }
         }
@@ -80,9 +87,31 @@
         downloadButton.textContent = "Download Bingo Card";
         downloadButton.addEventListener("click", downloadBingoCard);
 
-        // Append the table and button to the body
+        // Create a button for resetting the bingo card
+        const resetButton = document.createElement("button");
+        resetButton.textContent = "Reset Bingo Card";
+        resetButton.addEventListener("click", resetBingoCard);
+
+        // Create a form for submitting the bingo card
+        const submitForm = document.createElement("form");
+        submitForm.innerHTML = `
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <button type="submit">Submit Bingo Card</button>
+        `;
+        submitForm.addEventListener("submit", submitBingoCard);
+
+        // Create a message for sending the card to email
+        const emailMessage = document.createElement("div");
+        emailMessage.className = "email-message";
+        emailMessage.textContent = "To enter the competition, send the bingo card to my email.";
+
+        // Append the table, buttons, form, and message to the body
         document.body.appendChild(table);
         document.body.appendChild(downloadButton);
+        document.body.appendChild(resetButton);
+        document.body.appendChild(submitForm);
+        document.body.appendChild(emailMessage);
 
         // Check if there is a saved state in cookies
         const savedState = getCookie("bingoCardState");
@@ -119,16 +148,16 @@
         // Create a canvas and draw the table on it
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
-        canvas.width = 300;
-        canvas.height = 300;
+        canvas.width = 500;
+        canvas.height = 500;
 
         // Draw the table
-        ctx.font = "16px Arial";
+        ctx.font = "14px Arial";
         const cells = document.querySelectorAll("td");
         cells.forEach((cell, index) => {
-            const row = Math.floor(index / 3);
-            const col = index % 3;
-            ctx.fillText(cell.textContent, col * 100 + 25, row * 100 + 60);
+            const row = Math.floor(index / 5);
+            const col = index % 5;
+            ctx.fillText(cell.textContent, col * 100 + 10, row * 100 + 60);
             if (cell.classList.contains("marked")) {
                 ctx.beginPath();
                 ctx.arc(col * 100 + 50, row * 100 + 50, 40, 0, 2 * Math.PI);
@@ -141,6 +170,102 @@
         link.href = canvas.toDataURL();
         link.download = "bingo_card.png";
         link.click();
+    }
+
+    // Function to reset the bingo card
+    function resetBingoCard() {
+        // Remove the marked class from all cells
+        const cells = document.querySelectorAll(".marked");
+        cells.forEach(cell => cell.classList.remove("marked"));
+
+        // Clear the saved state in cookies
+        setCookie("bingoCardState", "", -1);
+
+        // Reload the page to create a new random bingo card
+        location.reload();
+    }
+
+    // Function to submit the bingo card
+    function submitBingoCard(event) {
+        event.preventDefault();
+
+        // Get the username from the form
+        const username = document.getElementById("username").value;
+
+        // Create a canvas and draw the table on it
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = 500;
+        canvas.height = 500;
+
+        // Draw the table
+        ctx.font = "14px Arial";
+        const cells = document.querySelectorAll("td");
+        cells.forEach((cell, index) => {
+            const row = Math.floor(index / 5);
+            const col = index % 5;
+            ctx.fillText(cell.textContent, col * 100 + 10, row * 100 + 60);
+            if (cell.classList.contains("marked")) {
+                ctx.beginPath();
+                ctx.arc(col * 100 + 50, row * 100 + 50, 40, 0, 2 * Math.PI);
+                ctx.stroke();
+            }
+        });
+
+        // Convert the canvas to a data URL
+        const imageDataURL = canvas.toDataURL();
+
+        // Create a Blob from the data URL
+        const blob = dataURLToBlob(imageDataURL);
+
+        // Create a FormData object and append the Blob
+        const formData = new FormData();
+        formData.append("bingoCard", blob, "bingo_card.png");
+        formData.append("username", username);
+
+        // Save the bingo card to the server (replace 'save_card.php' with the correct path)
+        fetch('save_card.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Bingo card submitted and saved successfully!');
+            } else {
+                alert('Failed to submit the bingo card.');
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            alert('Failed to submit the bingo card.');
+        });
+    }
+
+    // Function to convert data URL to Blob
+    function dataURLToBlob(dataURL) {
+        const parts = dataURL.split(';base64,');
+        const contentType = parts[0].split(':')[1];
+        const raw = window.atob(parts[1]);
+        const rawLength = raw.length;
+        const uInt8Array = new Uint8Array(rawLength);
+
+        for (let i = 0; i < rawLength; ++i) {
+            uInt8Array[i] = raw.charCodeAt(i);
+        }
+
+        return new Blob([uInt8Array], { type: contentType });
+    }
+
+    // Function to get the current date and time in a formatted string
+    function getCurrentDateTime() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        return `${year}${month}${day}_${hours}${minutes}${seconds}`;
     }
 
     // Create the bingo card on page load
