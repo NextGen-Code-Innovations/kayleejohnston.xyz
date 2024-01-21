@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Retail Bingo</title>
+    <title>Kroger Bingo</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -29,6 +29,10 @@
         }
         td.bingo {
             background-color: #82e0aa; /* Highlight cells part of the bingo */
+        }
+        td.free {
+            background-color: #ecf0f1; /* Free space color */
+            font-weight: bold;
         }
         button {
             margin-top: 10px;
@@ -96,6 +100,11 @@
 
             // Shuffle the answers and store them in a cookie
             shuffleAnswers(answers);
+
+            // Set the center square as a free space
+            const centerIndex = Math.floor(answers.length / 2);
+            answers[centerIndex] = "Free Space";
+
             setCookie("shuffledAnswers", answers.join(","), 365);
         }
 
@@ -109,6 +118,12 @@
                 const cell = row.insertCell();
                 cell.textContent = answers[i * 5 + j];
                 cell.setAttribute("data-answer", answers[i * 5 + j]);
+
+                // Add "free" class to the center square
+                if (i === 2 && j === 2) {
+                    cell.classList.add("free");
+                }
+
                 cell.addEventListener("click", toggleCell);
             }
         }
@@ -127,7 +142,7 @@
         // Create a message for sending the card to email
         const emailMessage = document.createElement("div");
         emailMessage.className = "email-message";
-        emailMessage.textContent = "Enter your username to download the bingo card. After download you can text the card to +1 (513) 305-7090 to be entered in the competition!!";
+        emailMessage.textContent = "Enter your username to download the bingo card and text it to +1 (513) 305-7090 to be entered into the competiton.";
 
         // Create an input field for the username
         const usernameInput = document.createElement("input");
@@ -229,7 +244,7 @@
 
     // Function to notify the user when they get bingo
     function notifyBingo() {
-        alert("Bingo! You've got a bingo. Congratulations! Download your card and text to +1 (513) 305-7090 to be entered in a competition!");
+        alert("Bingo! You've got a bingo. Congratulations! Download and text your card to  +1 (513) 305-7090 to be entered in to the competition!!");
     }
 
     // Function to download the bingo card as an image
