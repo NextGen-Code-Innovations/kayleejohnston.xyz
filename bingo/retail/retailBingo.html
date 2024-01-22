@@ -292,17 +292,60 @@
     }
 
     // Function to reset the bingo card
-    function resetBingoCard() {
-        // Remove the marked and bingo classes from all cells
-        const cells = document.querySelectorAll(".marked, .bingo");
-        cells.forEach(cell => cell.classList.remove("marked", "bingo"));
+function resetBingoCard() {
+    // Remove the marked and bingo classes from all cells
+    const cells = document.querySelectorAll(".marked, .bingo");
+    cells.forEach(cell => cell.classList.remove("marked", "bingo"));
 
-        // Clear the saved state in cookies
-        setCookie("bingoCardState", "", -1);
+    // Clear the saved state in cookies
+    setCookie("bingoCardState", "", -1);
 
-        // Reload the page to create a new random bingo card
-        location.reload();
+    // Fetch new answers and shuffle them
+    fetchNewAndShuffleAnswers().then(shuffledAnswers => {
+        // Update the cells with the new shuffled answers
+        updateCells(shuffledAnswers);
+
+        // Save the shuffled state in cookies
+        setCookie("shuffledAnswers", shuffledAnswers.join(","), 365);
+    });
+}
+
+// Function to fetch new answers and shuffle them
+async function fetchNewAndShuffleAnswers() {
+    // Fetch answers from the text file
+    const answers = await fetchAnswers();
+
+    // Shuffle the answers
+    shuffleAnswers(answers);
+
+    // Set the center square as a free space
+    const centerIndex = Math.floor(answers.length / 2);
+    answers[centerIndex] = "Free Space";
+
+    return answers;
+}
+
+    // Function to update the cells with new shuffled answers
+    function updateCells(answers) {
+        const cells = document.querySelectorAll("td");
+        cells.forEach((cell, index) => {
+            const row = Math.floor(index / 5);
+            const col = index % 5;
+            cell.textContent = answers[row * 5 + col];
+            cell.setAttribute("data-answer", answers[row * 5 + col]);
+
+            // Update the "free" class for the center square
+            if (row === 2 && col === 2) {
+                cell.classList.add("free");
+            } else {
+                cell.classList.remove("free");
+            }
+        });
+
+        // Add click event listeners to the updated cells
+        cells.forEach(cell => cell.addEventListener("click", toggleCell));
     }
+
 
     // Function to get the current date and time in a formatted string
     function getCurrentDateTime() {
