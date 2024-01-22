@@ -1,7 +1,7 @@
 Can I speak to MGMT
 Damage / theft
 Arrested
-Coutpon Invalid
+Coupon Invalid
 Friends with [person]
 Harassment
 Couple Yelling
@@ -12,7 +12,6 @@ Broken Glass
 Child Damages Product
 Can't Scan Barcode
 Price not right (asked)
-Couple Fighting
 Injured Employee or Customer
 Left Behind Personal Property
 Trying to return damaged item
