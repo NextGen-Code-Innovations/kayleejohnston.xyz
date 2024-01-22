@@ -24,3 +24,5 @@ Item Exchange
 Yelling at younger family member
 Opening Product
 U-Scan asking for help w/o reason
+Expired Item
+Cart Full of Damage
