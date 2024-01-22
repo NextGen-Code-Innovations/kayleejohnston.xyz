@@ -228,7 +228,7 @@
 
         // Check diagonals
         const diagonal1 = document.querySelectorAll("td[data-answer]:nth-child(6n+1).marked");
-        const diagonal2 = document.querySelectorAll("td[data-answer]:nth-child(4n).marked");
+        const diagonal2 = document.querySelectorAll("td[data-answer]:nth-child(6n-1).marked"); // Update this line
 
         if (diagonal1.length === 5) {
             markBingoCells(diagonal1);
@@ -239,7 +239,6 @@
             markBingoCells(diagonal2);
             return true;
         }
-
         return false;
     }
 
