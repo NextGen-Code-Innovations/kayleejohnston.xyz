@@ -335,7 +335,7 @@ async function fetchNewAndShuffleAnswers() {
             cell.setAttribute("data-answer", answers[row * 5 + col]);
 
             // Update the "free" class for the center square
-            if (row === 3 && col === 3) {
+            if (row === 2 && col === 2) {
                 cell.classList.add("free");
             } else {
                 cell.classList.remove("free");
