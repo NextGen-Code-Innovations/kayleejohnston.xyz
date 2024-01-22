@@ -26,3 +26,5 @@ Opening Product
 U-Scan asking for help w/o reason
 Expired Item
 Cart Full of Damage
+Card Decline
+Lack of Payment
