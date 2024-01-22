@@ -4,7 +4,7 @@ Arrested
 Coutpon Invalid
 Friends with [person]
 Harassment
-Yelling
+Couple Yelling
 Cart Locks / Door Alarm
 Misuse of E-exit
 Left Behind item
@@ -17,9 +17,9 @@ Injured Employee or Customer
 Left Behind Personal Property
 Trying to return damaged item
 "Well, you did it earlier"
-Answer 20
-Answer 21
-Answer 22
-Answer 23
-Answer 24
-Answer 25
+Scaming
+Propane Exchange
+Item Exchange
+"Do you have [item]"
+Yelling at younger family member
+Opening Product
