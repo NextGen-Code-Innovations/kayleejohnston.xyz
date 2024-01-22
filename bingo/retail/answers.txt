@@ -22,8 +22,9 @@ Item Exchange
 "Do you have [item]"
 Yelling at younger family member
 Opening Product
-U-Scan asking for help w/o reason
+Self-Scan asking for help w/o reason
 Expired Item
 Cart Full of Damage
 Card Decline
 Lack of Payment
+No ID/ Under aged
