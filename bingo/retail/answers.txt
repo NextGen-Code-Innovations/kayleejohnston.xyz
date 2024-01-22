@@ -15,7 +15,7 @@ Price not right (asked)
 Injured Employee or Customer
 Left Behind Personal Property
 Trying to return damaged item
-"Well, you did it earlier"
+"Well you did it earlier"
 Scaming
 Propane Exchange
 Item Exchange
