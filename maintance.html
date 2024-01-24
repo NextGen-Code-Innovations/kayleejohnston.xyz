@@ -44,7 +44,7 @@
 
     <script>
         // Set the date we're counting down to
-        const countDownDate = new Date("Jan 24, 2024 7:30:00").getTime();
+        const countDownDate = new Date("Jan 24, 2024 7:30:00").getTime(); // -------------------------------------------------------------------
 
         // Update the countdown every 1 second
         const x = setInterval(function() {
@@ -60,8 +60,11 @@
 
             if (distance < 0) {
                 clearInterval(x);
-                window.location.href = "https://kayleejohnston.xyz/index.html";
-                // document.getElementById("countdown").innerHTML = "We're live!";
+                window.location.href = "https://kayleejohnston.xyz/bingo/bingoSelect.html"; // ----------------------------------------------------------------
+                // https://www.kayleejohnston.xyz/maintance.html
+                //sites
+                // https://www.kayleejohnston.xyz/index.html
+                // https://www.kayleejohnston.xyz/bingo/bingoSelect.html
             }
         }, 1000);
     </script>
