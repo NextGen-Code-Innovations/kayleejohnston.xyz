@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Retail Bingo</title>
+    <title>Retail
+         Bingo</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #6b96e6;
-            color: #000000;
+            background-color: #f8f8f8;
+            color: #333;
         }
         table {
             border-collapse: collapse;
@@ -29,10 +30,6 @@
         }
         td.bingo {
             background-color: #82e0aa; /* Highlight cells part of the bingo */
-        }
-        td.free {
-            background-color: #ecf0f1; /* Free space color */
-            font-weight: bold;
         }
         button {
             margin-top: 10px;
@@ -59,7 +56,7 @@
         <a href="/index.html">Home</a>
         <a href="/bingo/bingoSelect.html">Bingo!!!</a>
         <a href="/professional/professionalLanding.html">Professional Life</a>
-        <a href="/about/about.html">About Me</a>
+        <a href="about/about.html">About Me</a>
         <a href="contact.html">Contact</a>
     </nav>
 <script>
@@ -106,11 +103,6 @@
 
             // Shuffle the answers and store them in a cookie
             shuffleAnswers(answers);
-
-            // Set the center square as a free space
-            const centerIndex = Math.floor(answers.length / 2);
-            answers[centerIndex] = "Free Space";
-
             setCookie("shuffledAnswers", answers.join(","), 365);
         }
 
@@ -124,12 +116,6 @@
                 const cell = row.insertCell();
                 cell.textContent = answers[i * 5 + j];
                 cell.setAttribute("data-answer", answers[i * 5 + j]);
-
-                // Add "free" class to the center square
-                if (i === 2 && j === 2) {
-                    cell.classList.add("free");
-                }
-
                 cell.addEventListener("click", toggleCell);
             }
         }
@@ -148,7 +134,7 @@
         // Create a message for sending the card to email
         const emailMessage = document.createElement("div");
         emailMessage.className = "email-message";
-        emailMessage.textContent = "Select the grey square as a free space. Enter your username to download the bingo card and text it to +1 (513) 305-7090 to be entered into the competiton.";
+        emailMessage.textContent = "Enter your username to download the bingo card.";
 
         // Create an input field for the username
         const usernameInput = document.createElement("input");
@@ -228,7 +214,7 @@
 
         // Check diagonals
         const diagonal1 = document.querySelectorAll("td[data-answer]:nth-child(6n+1).marked");
-        const diagonal2 = document.querySelectorAll("td[data-answer]:nth-child(6n-1).marked"); // Update this line
+        const diagonal2 = document.querySelectorAll("td[data-answer]:nth-child(4n).marked");
 
         if (diagonal1.length === 5) {
             markBingoCells(diagonal1);
@@ -239,6 +225,7 @@
             markBingoCells(diagonal2);
             return true;
         }
+
         return false;
     }
 
@@ -249,7 +236,7 @@
 
     // Function to notify the user when they get bingo
     function notifyBingo() {
-        alert("Bingo! You've got a bingo. Congratulations! Download and text your card to  +1 (513) 305-7090 to be entered in to the competition!!");
+        alert("Bingo! You've got a bingo. Congratulations! You can text the downloaded bingo card to (513) 305-7090 to be entered into a prize drawing!");
     }
 
     // Function to download the bingo card as an image
@@ -291,60 +278,17 @@
     }
 
     // Function to reset the bingo card
-function resetBingoCard() {
-    // Remove the marked and bingo classes from all cells
-    const cells = document.querySelectorAll(".marked, .bingo");
-    cells.forEach(cell => cell.classList.remove("marked", "bingo"));
+    function resetBingoCard() {
+        // Remove the marked and bingo classes from all cells
+        const cells = document.querySelectorAll(".marked, .bingo");
+        cells.forEach(cell => cell.classList.remove("marked", "bingo"));
 
-    // Clear the saved state in cookies
-    setCookie("bingoCardState", "", -1);
+        // Clear the saved state in cookies
+        setCookie("bingoCardState", "", -1);
 
-    // Fetch new answers and shuffle them
-    fetchNewAndShuffleAnswers().then(shuffledAnswers => {
-        // Update the cells with the new shuffled answers
-        updateCells(shuffledAnswers);
-
-        // Save the shuffled state in cookies
-        setCookie("shuffledAnswers", shuffledAnswers.join(","), 365);
-    });
-}
-
-// Function to fetch new answers and shuffle them
-async function fetchNewAndShuffleAnswers() {
-    // Fetch answers from the text file
-    const answers = await fetchAnswers();
-
-    // Shuffle the answers
-    shuffleAnswers(answers);
-
-    // Set the center square as a free space
-    const centerIndex = Math.floor(answers.length / 2);
-    answers[centerIndex] = "Free Space";
-
-    return answers;
-}
-
-    // Function to update the cells with new shuffled answers
-    function updateCells(answers) {
-        const cells = document.querySelectorAll("td");
-        cells.forEach((cell, index) => {
-            const row = Math.floor(index / 5);
-            const col = index % 5;
-            cell.textContent = answers[row * 5 + col];
-            cell.setAttribute("data-answer", answers[row * 5 + col]);
-
-            // Update the "free" class for the center square
-            if (row === 2 && col === 2) {
-                cell.classList.add("free");
-            } else {
-                cell.classList.remove("free");
-            }
-        });
-
-        // Add click event listeners to the updated cells
-        cells.forEach(cell => cell.addEventListener("click", toggleCell));
+        // Reload the page to create a new random bingo card
+        location.reload();
     }
-
 
     // Function to get the current date and time in a formatted string
     function getCurrentDateTime() {

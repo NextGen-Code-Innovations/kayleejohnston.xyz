@@ -107,6 +107,10 @@
             // Shuffle the answers and store them in a cookie
             shuffleAnswers(answers);
 
+            // Set the center square as a free space
+            const centerIndex = Math.floor(answers.length / 2);
+            answers[centerIndex] = "Free Space";
+
             setCookie("shuffledAnswers", answers.join(","), 365);
         }
 
@@ -120,6 +124,11 @@
                 const cell = row.insertCell();
                 cell.textContent = answers[i * 5 + j];
                 cell.setAttribute("data-answer", answers[i * 5 + j]);
+
+                // Add "free" class to the center square
+                if (i === 2 && j === 2) {
+                    cell.classList.add("free");
+                }
 
                 cell.addEventListener("click", toggleCell);
             }
@@ -308,6 +317,10 @@ async function fetchNewAndShuffleAnswers() {
     // Shuffle the answers
     shuffleAnswers(answers);
 
+    // Set the center square as a free space
+    const centerIndex = Math.floor(answers.length / 2);
+    answers[centerIndex] = "Free Space";
+
     return answers;
 }
 
@@ -319,6 +332,13 @@ async function fetchNewAndShuffleAnswers() {
             const col = index % 5;
             cell.textContent = answers[row * 5 + col];
             cell.setAttribute("data-answer", answers[row * 5 + col]);
+
+            // Update the "free" class for the center square
+            if (row === 2 && col === 2) {
+                cell.classList.add("free");
+            } else {
+                cell.classList.remove("free");
+            }
         });
 
         // Add click event listeners to the updated cells
