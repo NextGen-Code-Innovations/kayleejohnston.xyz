@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            max-width: 400px;
+        }
+
+        .button {
+            padding: 15px;
+            text-align: center;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+
+<div class="button-grid">
+    <button class="button" onclick="window.location.href='https://us-east-2.console.aws.amazon.com/console/home?region=us-east-2'">AWS Console</button>
+    <button class="button" onclick="window.location.href='https://www.kayleejohnston.net'">Main Site</button>
+    <button class="button" onclick="window.location.href='https://www.sillylittlegoose.org'">The Silly Little Goose</button>
+    <button class="button" onclick="window.location.href='https://www.wildcatmakerspace.com'">Wildcat Makerspace</button>
+    <button class="button" onclick="window.location.href='https://www.example5.com'">Website 5</button>
+    <button class="button" onclick="window.location.href='https://www.example6.com'">Website 6</button>
+    <button class="button" onclick="window.location.href='https://www.example7.com'">Website 7</button>
+    <button class="button" onclick="window.location.href='https://www.example8.com'">Website 8</button>
+</div>
+
+</body>
+</html>
