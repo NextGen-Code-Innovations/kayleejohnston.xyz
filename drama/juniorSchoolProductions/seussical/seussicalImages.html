@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seussical the Musical Gallery</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #FFE5B4; /* Peach */
+        margin: 0;
+        padding: 20px;
+    }
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        grid-gap: 20px;
+    }
+    .image-container {
+        position: relative;
+    }
+    .image-container img {
+        max-width: 150px;
+        width: 100%;
+        height: auto;
+    }
+    .download-button {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #FF4500; /* Orange Red */
+        color: white;
+        padding: 5px 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none;
+    }
+    .download-button:hover {
+        background-color: #FF6347; /* Tomato */
+    }
+</style>
+</head>
+<body>
+<div class="container" id="imageContainer">
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Replace 'path/to/your/images' with the path to your actual image folder
+    const imageFolder = '/src/dramaImages/seussical2024Images/';
+    const container = document.getElementById('imageContainer');
+
+    fetchImages(imageFolder);
+
+    function fetchImages(folder) {
+        fetch(folder)
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(image => {
+                    const imageContainer = document.createElement('div');
+                    imageContainer.className = 'image-container';
+
+                    const img = document.createElement('img');
+                    img.src = image.url;
+                    img.alt = 'Seussical Image';
+                    img.style.maxWidth = '150px';
+
+                    const downloadBtn = document.createElement('a');
+                    downloadBtn.className = 'download-button';
+                    downloadBtn.href = image.url;
+                    downloadBtn.download = 'image';
+                    downloadBtn.textContent = 'Download';
+
+                    imageContainer.appendChild(img);
+                    imageContainer.appendChild(downloadBtn);
+
+                    container.appendChild(imageContainer);
+                });
+            })
+            .catch(error => console.error('Error fetching images:', error));
+    }
+});
+</script>
+</body>
+</html>
