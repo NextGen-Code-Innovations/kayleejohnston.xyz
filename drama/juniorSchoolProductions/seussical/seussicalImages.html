@@ -50,14 +50,14 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    // Replace 'path/to/your/images' with the path to your actual image folder
-    const imageFolder = '/src/dramaImages/';
+    // Replace 'path/to/your/json/file.json' with the path to your actual JSON file
+    const jsonFile = 'dramaImages.json';
     const container = document.getElementById('imageContainer');
 
-    fetchImages(imageFolder);
+    fetchImages(jsonFile);
 
-    function fetchImages(folder) {
-        fetch(folder)
+    function fetchImages(jsonFile) {
+        fetch(jsonFile)
             .then(response => response.json())
             .then(data => {
                 data.forEach(image => {
