@@ -1,62 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title>Home</title>
+    <title>VEX Robotics</title>
     <style>
         body {
-            position: relative;
+            font-family: Arial, sans-serif;
+            text-align: center;
         }
 
-        .account-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
+
 <body>
-    <h1>Welcome!</h1>
-    <nav>
-        <a href="/index.html">Home</a>
-        <a href="/bingo/bingoSelect.html">Bingo!!!</a>
-        <a href="/professional/professionalLanding.html">Professional Life</a>
-        <a href="/robotics/robotics.html">Robotics</a>
-        <a href="about/about.html">About Me</a>
-        <a href="contact.html">Contact</a>
-    </nav>
+    <h1>VEX Robotics</h1>
+    <div>
+        <a href="cadModel.html" class="button">CAD Model</a>
+        <a href="video.html" class="button">Robot Video</a>
+    </div>
+</body>
 
-    <a href="https://main.d1dszt21xxmmqy.amplifyapp.com/src/main.c">Main.c file</a>
-    <a href="https://main.d1dszt21xxmmqy.amplifyapp.com/src/auton.c">auton.c file</a>
-
-    <!--<ul id="fileList"></ul>-->
-
-    <script>
-        /*
-        // Replace 'username' and 'repository' with your GitHub username and repository name
-        const username = 'NextGen-Code-Innovations';
-        const repository = '2024-Vex-11254X-code';
-        const apiUrl = `https://api.github.com/repos/${username}/${repository}/contents`;
-
-        fetch(apiUrl)
-            .then(response => response.json())
-            .then(data => {
-                const fileList = document.getElementById('fileList');
-                data.forEach(file => {
-                    if (file.type === 'file') {
-                        const listItem = document.createElement('li');
-                        const link = document.createElement('a');
-                        link.href = file.html_url;
-                        link.textContent = file.name;
-                        listItem.appendChild(link);
-                        fileList.appendChild(listItem);
-                    }
-                });
-            })
-            .catch(error => console.error('Error fetching files:', error));
-            */
-    </script>
-</body> 
 </html>
